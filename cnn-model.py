@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Step 1: Load the CSV File
-df = pd.read_csv('your_csv_file.csv')
+df = pd.read_csv('styles.csv')
 
 # Step 2: Create a Data Generator
 def generate_data(df, batch_size=32, img_size=(128, 128)):
@@ -19,11 +19,11 @@ def generate_data(df, batch_size=32, img_size=(128, 128)):
         X_batch = []
         y_batch = []
         for _, row in df.sample(n=batch_size).iterrows():
-            img_path = os.path.join('images_folder', row['image_filename'])
+            img_path = os.path.join('images', row['id'])
             img = load_img(img_path, target_size=img_size)
             img_array = img_to_array(img) / 255.0
             X_batch.append(img_array)
-            y_batch.append(row['label'])  # Assuming 'label' is the column name for class labels
+            y_batch.append(row['articleType'])  # articleType is the column name for class labels
 
         X_batch = np.array(X_batch)
         y_batch = np.array(y_batch)
