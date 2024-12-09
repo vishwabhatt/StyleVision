@@ -16,6 +16,7 @@ from tensorflow.keras.optimizers import Adam
 import tensorflow as tf
 
 # Step 1: Extract and Load Dataset
+
 extract_dir = "/content/dataset"  # Extraction directory
 
 # Step 2: Preprocess Images
@@ -111,4 +112,44 @@ print(classification_report(y_val_true_classes, y_val_pred_classes, target_names
 
 # Step 11: Save Model
 model.save('fashion_cnn_optimized_model.h5')
-print("Model saved as fashion_cnn_optimized_model.h5") 
+print("Model saved as fashion_cnn_optimized_model.h5")
+
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Training vs. Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
+
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Training vs. Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+report = classification_report(y_val_true_classes, y_val_pred_classes, target_names=label_encoder.classes_, output_dict=True)
+f1_scores = [report[label]['f1-score'] for label in label_encoder.classes_]
+
+plt.bar(label_encoder.classes_, f1_scores, color='skyblue')
+plt.title('Class-Wise F1-Score')
+plt.xlabel('Classes')
+plt.ylabel('F1-Score')
+plt.xticks(rotation=45)
+plt.show()
+
+misclassified_indices = np.where(y_val_true_classes != y_val_pred_classes)[0]
+plt.figure(figsize=(10, 10))
+for i, idx in enumerate(misclassified_indices[:9]):
+    plt.subplot(3, 3, i + 1)
+    plt.imshow(X_val[idx])
+    plt.title(f"True: {label_encoder.classes_[y_val_true_classes[idx]]}\nPred: {label_encoder.classes_[y_val_pred_classes[idx]]}")
+    plt.axis('off')
+plt.show()
+
+unique, counts = np.unique(y, return_counts=True)
+plt.pie(counts, labels=unique, autopct='%1.1f%%')
+plt.title('Class Distribution in Dataset')
+plt.show()
